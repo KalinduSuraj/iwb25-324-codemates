@@ -1,16 +1,17 @@
 import ballerina/http;
 
-listener http:Listener helloListener = new(8080);
+# A service representing a network-accessible API
+# bound to port `9090`.
+service / on new http:Listener(9090) {
 
-service /hello on helloListener {
-
-    @http:ResourceConfig {
-        cors: {
-            allowOrigins: ["*"],
-            allowMethods: ["GET", "POST"]
+    # A resource for generating greetings
+    # + name - name as a string or nil
+    # + return - string name with hello message or error
+    resource function get greeting(string? name) returns string|error {
+        // Send a response back to the caller.
+        if name is () {
+            return error("name should not be empty!");
         }
-    }
-    resource function get greeting() returns string {
-        return "Hello from BinBuddy!";
+        return string `Hello, ${name}`;
     }
 }
