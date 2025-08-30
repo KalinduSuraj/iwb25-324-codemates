@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BinBuddy</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Main Content -->
+    <div id="main-content" class="text-center transition-all duration-500 ease-in-out">
+        <div class="bg-white p-10 rounded-3xl shadow-lg max-w-lg mx-auto">
+            <h1 class="text-6xl font-extrabold text-green-600 mb-4">BinBuddy</h1>
+            <p class="text-lg text-gray-700 mb-8">Your friendly partner for waste management.</p>
+            <button id="signInButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-110">
+                Sign In
+            </button>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 opacity-0 transition-all duration-500" id="authContainer">
+            <div class="p-8">
+                <!-- Close -->
+                <div class="text-right">
+                    <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+                        ✖
+                    </button>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex justify-center border-b border-gray-200">
+                    <button id="signInTab" class="py-3 px-6 font-semibold text-gray-500 border-b-2 border-transparent">Sign In</button>
+                    <button id="signUpTab" class="py-3 px-6 font-semibold text-gray-500 border-b-2 border-transparent">Sign Up</button>
+                </div>
+
+                <!-- Forms -->
+                <div class="mt-8">
+                    <!-- Sign In -->
+                    <form id="signInForm" class="space-y-6">
+                        <div>
+                            <label>Email Address</label>
+                            <input id="signInEmail" type="email" required class="w-full px-4 py-3 border rounded-xl">
+                        </div>
+                        <div>
+                            <label>Password</label>
+                            <input id="signInPassword" type="password" required class="w-full px-4 py-3 border rounded-xl">
+                        </div>
+                        <button type="submit" class="w-full py-3 rounded-full bg-green-600 text-white">Sign In</button>
+                    </form>
+
+                    <!-- Sign Up -->
+                    <form id="signUpForm" class="space-y-6 hidden">
+                        <div>
+                            <label>Username</label>
+                            <input id="signUpUsername" type="text" required class="w-full px-4 py-3 border rounded-xl">
+                        </div>
+                        <div>
+                            <label>Email Address</label>
+                            <input id="signUpEmail" type="email" required class="w-full px-4 py-3 border rounded-xl">
+                        </div>
+                        <div>
+                            <label>Password</label>
+                            <input id="signUpPassword" type="password" required class="w-full px-4 py-3 border rounded-xl">
+                        </div>
+                        <button type="submit" class="w-full py-3 rounded-full bg-green-600 text-white">Sign Up</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const signInButton = document.getElementById('signInButton');
+            const authModal = document.getElementById('authModal');
+            const authContainer = document.getElementById('authContainer');
+            const closeModal = document.getElementById('closeModal');
+            const signInTab = document.getElementById('signInTab');
+            const signUpTab = document.getElementById('signUpTab');
+            const signInForm = document.getElementById('signInForm');
+            const signUpForm = document.getElementById('signUpForm');
+
+            const setActiveTab = (active, inactive) => {
+                active.classList.add('text-green-600', 'border-green-600');
+                inactive.classList.remove('text-green-600', 'border-green-600');
+            };
+
+            setActiveTab(signInTab, signUpTab);
+
+            signInButton.addEventListener('click', () => {
+                authModal.classList.remove('hidden');
+                setTimeout(() => {
+                    authContainer.classList.remove('scale-95', 'opacity-0');
+                    authContainer.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            });
+
+            closeModal.addEventListener('click', () => {
+                authContainer.classList.remove('scale-100', 'opacity-100');
+                authContainer.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => { authModal.classList.add('hidden'); }, 500);
+            });
+
+            signUpTab.addEventListener('click', () => {
+                signInForm.classList.add('hidden');
+                signUpForm.classList.remove('hidden');
+                setActiveTab(signUpTab, signInTab);
+            });
+
+            signInTab.addEventListener('click', () => {
+                signUpForm.classList.add('hidden');
+                signInForm.classList.remove('hidden');
+                setActiveTab(signInTab, signUpTab);
+            });
+
+            // 🔑 Connect Sign In
+            signInForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('signInEmail').value;
+                const password = document.getElementById('signInPassword').value;
+
+                try {
+                    const res = await fetch('http://localhost:8080/auth/signin', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+                    const data = await res.json();
+                    alert(data.message);
+                } catch (err) {
+                    alert("⚠️ Backend not reachable");
+                }
+            });
+
+            // 📝 Connect Sign Up
+            signUpForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const username = document.getElementById('signUpUsername').value;
+                const email = document.getElementById('signUpEmail').value;
+                const password = document.getElementById('signUpPassword').value;
+
+                try {
+                    const res = await fetch('http://localhost:8080/auth/signup', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, email, password })
+                    });
+                    const data = await res.json();
+                    alert(data.message);
+                } catch (err) {
+                    alert("⚠️ Backend not reachable");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
