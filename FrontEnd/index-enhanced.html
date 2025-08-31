@@ -13,9 +13,7 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #F0FDF4;
-            /* A very light green for the body background */
         }
-        /* Custom scrollbar for a more polished look */
         
          ::-webkit-scrollbar {
             width: 8px;
@@ -27,21 +25,17 @@
         
          ::-webkit-scrollbar-thumb {
             background: #15803d;
-            /* dark green */
             border-radius: 10px;
         }
         
          ::-webkit-scrollbar-thumb:hover {
             background: #166534;
-            /* slightly darker green */
         }
         
         .nav-link-active {
             color: #22c55e;
-            /* bright green */
             font-weight: 600;
         }
-        /* Animation for the modal */
         
         .modal-enter {
             animation: fadeIn 0.3s ease-out;
@@ -111,8 +105,10 @@
         </div>
     </div>
 
+    <!-- Load the BinBuddy Auth API -->
+    <script src="js/auth-api.js"></script>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- MAIN APPLICATION JAVASCRIPT -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
@@ -123,9 +119,10 @@
                     const state = {
                         currentPage: 'home',
                         isLoggedIn: false,
-                        userEmail: null,
+                        userInfo: null,
                         isModalOpen: false,
                         isSignInForm: true,
+                        userType: 'customer' // 'customer', 'collector', 'admin'
                     };
 
                     // =================================================================================
@@ -154,7 +151,8 @@
                         <div id="auth-section" class="hidden md:block">
                             ${state.isLoggedIn ?
                         `<div class="flex items-center space-x-4">
-                                    <span class="text-sm text-gray-700">Welcome, ${state.userEmail}</span>
+                                    <span class="text-sm text-gray-700">Welcome, ${state.userInfo?.profile?.full_name || state.userInfo?.email}</span>
+                                    <button id="dashboardBtn" class="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-600 transition-all shadow-sm">Dashboard</button>
                                     <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-red-600 transition-all shadow-sm">Logout</button>
                                 </div>` :
                         `<button id="signInBtn" class="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-green-700 transition-all shadow-sm hover:shadow-lg transform hover:-translate-y-px">
@@ -179,7 +177,8 @@
                             <div class="mt-4 pt-4 border-t border-gray-200" id="mobile-auth-section">
                             ${state.isLoggedIn ?
                         `<div class="flex flex-col space-y-3">
-                                    <span class="text-sm text-gray-700 px-3">Welcome, ${state.userEmail}</span>
+                                    <span class="text-sm text-gray-700 px-3">Welcome, ${state.userInfo?.profile?.full_name || state.userInfo?.email}</span>
+                                    <button id="mobileDashboardBtn" class="w-full text-left bg-blue-500 text-white px-3 py-2 rounded-md text-sm font-semibold hover:bg-blue-600">Dashboard</button>
                                     <button id="mobileLogoutBtn" class="w-full text-left bg-red-500 text-white px-3 py-2 rounded-md text-sm font-semibold hover:bg-red-600">Logout</button>
                                 </div>` :
                         `<button id="mobileSignInBtn" class="w-full text-left bg-green-600 text-white px-3 py-2 rounded-md text-sm font-semibold hover:bg-green-700">
@@ -260,52 +259,39 @@
             // --- Page Content Components ---
             const pages = {
                 home: `
-                    <div class="relative overflow-hidden rounded-3xl bg-cover bg-center p-8 md:p-16 text-white" style="background-image: url('./assets/images/background3.png');">
-                        
-                        <div class="absolute inset-0 bg-black/40"></div>
-
-                        <div class="relative z-10 flex flex-col items-center">
-
-                            <div class="w-full max-w-4xl text-center bg-white/10 backdrop-blur-lg rounded-2xl p-8 md:p-12 border border-white/20 shadow-lg">
-                                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight text-shadow">
-                                    <span class="text-green-300">Smart Waste Management</span> for a Greener Tomorrow.
-                                </h1>
-                                <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-200">
-                                    BinBuddy provides innovative, eco-friendly solutions to manage waste efficiently. Join us in making our communities cleaner and more sustainable.
-                                </p>
-                                <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-                                    <button class="nav-link bg-green-600 text-white font-bold py-3 px-8 rounded-full hover:bg-green-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1" data-page="services">Our Services</button>
-                                    <button class="nav-link bg-white/20 text-white font-bold py-3 px-8 rounded-full hover:bg-white/30 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 border-2 border-white/50" data-page="contact">Contact Us</button>
-                                </div>
+                    <div class="text-center">
+                        <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight">
+                            <span class="text-green-700">Smart Waste Management</span> for a Greener Tomorrow.
+                        </h1>
+                        <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                            BinBuddy provides innovative, eco-friendly solutions to manage waste efficiently. Join us in making our communities cleaner and more sustainable.
+                        </p>
+                        <div class="mt-8 flex justify-center gap-4">
+                            <button class="nav-link bg-green-600 text-white font-bold py-3 px-8 rounded-full hover:bg-green-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1" data-page="services">Our Services</button>
+                            <button class="nav-link bg-white text-green-600 font-bold py-3 px-8 rounded-full hover:bg-green-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 border-2 border-green-600" data-page="contact">Contact Us</button>
+                        </div>
+                    </div>
+                    <div class="mt-20 grid grid-cols-1 md:grid-cols-3 gap-10">
+                        <div class="bg-white p-8 rounded-2xl shadow-lg text-center hover:shadow-2xl transition-shadow transform hover:-translate-y-2">
+                            <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto">
+                               <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                             </div>
-
-                            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
-                                
-                                <div class="bg-white/10 backdrop-blur-md p-8 rounded-2xl text-center border border-white/20 shadow-lg transition-transform hover:-translate-y-2">
-                                    <div class="bg-white/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto">
-                                    <svg xmlns="http://www.w.org/2000/svg" class="h-8 w-8 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                    </div>
-                                    <h3 class="mt-4 text-xl font-bold text-white">Residential Pickup</h3>
-                                    <p class="mt-2 text-gray-300">Reliable and timely trash collection for your home. We handle everything, so you don't have to.</p>
-                                </div>
-                                
-                                <div class="bg-white/10 backdrop-blur-md p-8 rounded-2xl text-center border border-white/20 shadow-lg transition-transform hover:-translate-y-2">
-                                    <div class="bg-white/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
-                                    </div>
-                                    <h3 class="mt-4 text-xl font-bold text-white">Commercial Solutions</h3>
-                                    <p class="mt-2 text-gray-300">Customized waste management plans for businesses of all sizes. Keep your workplace clean and compliant.</p>
-                                </div>
-                                
-                                <div class="bg-white/10 backdrop-blur-md p-8 rounded-2xl text-center border border-white/20 shadow-lg transition-transform hover:-translate-y-2">
-                                    <div class="bg-white/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.S82m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                                    </div>
-                                    <h3 class="mt-4 text-xl font-bold text-white">Recycling Programs</h3>
-                                    <p class="mt-2 text-gray-300">Easy and effective recycling solutions to help you reduce your carbon footprint and protect the environment.</p>
-                                </div>
-
+                            <h3 class="mt-4 text-xl font-bold">Residential Pickup</h3>
+                            <p class="mt-2 text-gray-600">Reliable and timely trash collection for your home. We handle everything, so you don't have to.</p>
+                        </div>
+                         <div class="bg-white p-8 rounded-2xl shadow-lg text-center hover:shadow-2xl transition-shadow transform hover:-translate-y-2">
+                             <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                             </div>
+                            <h3 class="mt-4 text-xl font-bold">Commercial Solutions</h3>
+                            <p class="mt-2 text-gray-600">Customized waste management plans for businesses of all sizes. Keep your workplace clean and compliant.</p>
+                        </div>
+                         <div class="bg-white p-8 rounded-2xl shadow-lg text-center hover:shadow-2xl transition-shadow transform hover:-translate-y-2">
+                             <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                            </div>
+                            <h3 class="mt-4 text-xl font-bold">Recycling Programs</h3>
+                            <p class="mt-2 text-gray-600">Easy and effective recycling solutions to help you reduce your carbon footprint and protect the environment.</p>
                         </div>
                     </div>
                 `,
@@ -423,11 +409,52 @@
                         </button>
                     </div>
                     
+                    <!-- User Type Selection for Sign Up -->
+                    ${!isSignIn ? `
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">I am a:</label>
+                        <div class="flex space-x-4">
+                            <label class="flex items-center">
+                                <input type="radio" name="userType" value="customer" checked class="text-green-600 focus:ring-green-500">
+                                <span class="ml-2 text-sm text-gray-700">Customer</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="userType" value="collector" class="text-green-600 focus:ring-green-500">
+                                <span class="ml-2 text-sm text-gray-700">Collector</span>
+                            </label>
+                        </div>
+                    </div>` : ''}
+                    
                     <form id="authForm" class="mt-8 space-y-4" novalidate>
                         ${!isSignIn ? `
                         <div>
                             <label for="name" class="text-sm font-medium text-gray-700 sr-only">Full Name</label>
                             <input type="text" name="name" id="name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Full Name">
+                        </div>
+                        
+                        <!-- Collector-specific fields -->
+                        <div id="collectorFields" class="space-y-4 hidden">
+                            <div>
+                                <input type="text" name="phone" id="phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Phone Number">
+                            </div>
+                            <div>
+                                <select name="vehicleType" id="vehicleType" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    <option value="">Select Vehicle Type</option>
+                                    <option value="Three Wheeler">Three Wheeler</option>
+                                    <option value="Small Truck">Small Truck</option>
+                                    <option value="Large Truck">Large Truck</option>
+                                    <option value="Van">Van</option>
+                                </select>
+                            </div>
+                            <div>
+                                <input type="text" name="vehicleNumber" id="vehicleNumber" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Vehicle Number">
+                            </div>
+                            <div>
+                                <input type="text" name="licenseNumber" id="licenseNumber" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="License Number">
+                            </div>
+                            <div>
+                                <input type="text" name="serviceArea" id="serviceArea" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Service Area">
+                            </div>
                         </div>` : ''}
 
                         <div>
@@ -458,7 +485,6 @@
                 </div>
                 `;
             };
-
 
             // =================================================================================
             // RENDER & UI UPDATE FUNCTIONS
@@ -495,7 +521,7 @@
                         setTimeout(() => {
                             modal.classList.add('hidden');
                             modal.classList.remove('flex');
-                        }, 300); // match animation duration
+                        }, 300);
                     }
                 }
 
@@ -520,7 +546,7 @@
                         const page = e.currentTarget.dataset.page;
                         if (page) {
                             updateState({ currentPage: page });
-                            window.scrollTo(0, 0); // Scroll to top on page change
+                            window.scrollTo(0, 0);
                         }
                     });
                 });
@@ -530,11 +556,15 @@
                 const logoutBtn = document.getElementById('logoutBtn');
                 const mobileSignInBtn = document.getElementById('mobileSignInBtn');
                 const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
+                const dashboardBtn = document.getElementById('dashboardBtn');
+                const mobileDashboardBtn = document.getElementById('mobileDashboardBtn');
 
                 if (signInBtn) signInBtn.addEventListener('click', openModal);
                 if (mobileSignInBtn) mobileSignInBtn.addEventListener('click', openModal);
                 if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
                 if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);
+                if (dashboardBtn) dashboardBtn.addEventListener('click', goToDashboard);
+                if (mobileDashboardBtn) mobileDashboardBtn.addEventListener('click', goToDashboard);
 
                 // Mobile Menu Toggle
                 const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -550,8 +580,13 @@
                 document.getElementById('authForm')?.addEventListener('submit', handleAuthFormSubmit);
                 document.getElementById('closeModalBtn')?.addEventListener('click', closeModal);
                 document.getElementById('toggleFormBtn')?.addEventListener('click', toggleAuthForm);
+                
+                // Handle user type selection
+                const userTypeRadios = document.querySelectorAll('input[name="userType"]');
+                userTypeRadios.forEach(radio => {
+                    radio.addEventListener('change', handleUserTypeChange);
+                });
             }
-
 
             // =================================================================================
             // AUTHENTICATION LOGIC
@@ -566,41 +601,22 @@
             }
 
             function toggleAuthForm() {
-                // Toggle the form state and re-render only the modal content
                 state.isSignInForm = !state.isSignInForm;
                 const modalContent = document.getElementById('modalContent');
                 if (modalContent) {
                     modalContent.innerHTML = AuthForm();
-                    addModalEventListeners(); // Re-attach listeners to the new form
-                }
-            }
-            async function mockLogin(email, password) {
-                // Simulate a network delay of 500ms
-                await new Promise(resolve => setTimeout(resolve, 500));
-
-                // --- Test Case 1: Successful Customer Login ---
-                if (email === 'customer@test.com' && password === 'pass123') {
-                    console.log('Mock Login: Success as customer');
-                    return {
-                        token: 'mock-customer-token-xyz-is-very-long-and-secure',
-                        role: 'customer'
-                    };
-                }
-                // --- Test Case 2: Successful Admin Login ---
-                else if (email === 'admin@test.com' && password === 'pass456') {
-                    console.log('Mock Login: Success as admin');
-                    return {
-                        token: 'mock-admin-token-abc-is-also-very-secure',
-                        role: 'admin'
-                    };
-                }
-                // --- Test Case 3: Failed Login ---
-                else {
-                    console.log('Mock Login: Failed');
-                    throw new Error('Invalid email or password.');
+                    addModalEventListeners();
                 }
             }
 
+            function handleUserTypeChange(e) {
+                const userType = e.target.value;
+                state.userType = userType;
+                const collectorFields = document.getElementById('collectorFields');
+                if (collectorFields) {
+                    collectorFields.classList.toggle('hidden', userType !== 'collector');
+                }
+            }
 
             async function handleAuthFormSubmit(e) {
                 e.preventDefault();
@@ -611,112 +627,138 @@
                 const submitBtn = form.querySelector('button[type="submit"]');
                 const originalBtnText = submitBtn.innerHTML;
 
-                // --- Start Loading State ---
+                // Start loading state
                 messageEl.textContent = '';
                 messageEl.classList.add('hidden');
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = `<span class="flex items-center justify-center"><svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...</span>`;
 
-
                 try {
                     if (state.isSignInForm) {
-                        // --- API SIGN IN ---
-
-                        const response = await fetch('http://localhost:8084/api/customer/login', { 
-
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ email, password })
-                        });
-
-                        const data = await response.json();
-
-                        if (!response.ok) {
-                            throw new Error(data.message || 'Login failed.');
+                        // Sign In - determine user type by email or admin check
+                        let response;
+                        
+                        // Check if admin email (basic check)
+                        if (email.includes('admin') || email.endsWith('@binbuddy.lk')) {
+                            response = await BinBuddyAuth.loginAdmin(email, password);
+                        } else {
+                            // Try customer login first
+                            try {
+                                response = await BinBuddyAuth.loginCustomer(email, password);
+                            } catch (customerError) {
+                                // If customer login fails, try collector login
+                                response = await BinBuddyAuth.loginCollector(email, password);
+                            }
                         }
 
-                        // Store token from backend response
-                        if (data.session_token) {
-                            localStorage.setItem('authToken', data.session_token);
+                        if (response.success) {
+                            const userInfo = BinBuddyAuth.getStoredUserInfo();
+                            updateState({ 
+                                isLoggedIn: true, 
+                                userInfo: userInfo,
+                                isModalOpen: false 
+                            });
+                            
+                            // Redirect to appropriate dashboard
+                            goToDashboard();
                         } else {
-                            throw new Error("No token received from server.");
-                        }
-
-                        // Check role and redirect
-                        if (data.role === 'customer') {
-                            window.location.href = './customer.html';
-                        } else if (data.role === 'admin') {
-                            window.location.href = './admin.html';
-                        } else {
-                            throw new Error('Unknown user role. Please contact support.');
+                            throw new Error(response.message || 'Login failed');
                         }
 
                     } else {
-                        // --- API SIGN UP ---
+                        // Sign Up
                         const name = form.name.value;
-
-                        const response = await fetch('http://localhost:8084/api/customer/register', { 
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ name, email, password })
-                        });
-
-                        const data = await response.json();
-
-                        if (!response.ok) {
-                            throw new Error(data.message || 'Sign-up failed.');
+                        let response;
+                        
+                        if (state.userType === 'collector') {
+                            const collectorData = {
+                                full_name: name,
+                                email: email,
+                                password: password,
+                                phone: form.phone.value,
+                                vehicle_type: form.vehicleType.value,
+                                vehicle_number: form.vehicleNumber.value,
+                                license_number: form.licenseNumber.value,
+                                service_area: form.serviceArea.value
+                            };
+                            response = await BinBuddyAuth.registerCollector(collectorData);
+                        } else {
+                            const customerData = {
+                                full_name: name,
+                                email: email,
+                                password: password
+                            };
+                            response = await BinBuddyAuth.registerCustomer(customerData);
                         }
 
-                        // Automatically switch to sign-in form with a success message
-                        toggleAuthForm(); // This flips the state to the sign-in form
-
-                        // Use a short delay to ensure the DOM is updated before adding the success message
-                        setTimeout(() => {
-                            const newSignInForm = document.getElementById('authForm');
-                            if (newSignInForm) {
-                                newSignInForm.email.value = email; // Pre-fill email
-                                const successMessage = document.createElement('p');
-                                successMessage.className = 'text-sm text-green-600 -mt-2 mb-4';
-                                successMessage.textContent = 'Account created successfully! Please sign in.';
-                                newSignInForm.prepend(successMessage);
-                            }
-                        }, 100);
+                        if (response.success) {
+                            // Switch to sign-in form with success message
+                            toggleAuthForm();
+                            setTimeout(() => {
+                                const newSignInForm = document.getElementById('authForm');
+                                if (newSignInForm) {
+                                    newSignInForm.email.value = email;
+                                    const successMessage = document.createElement('p');
+                                    successMessage.className = 'text-sm text-green-600 -mt-2 mb-4';
+                                    successMessage.textContent = 'Account created successfully! Please sign in.';
+                                    newSignInForm.prepend(successMessage);
+                                }
+                            }, 100);
+                        } else {
+                            throw new Error(response.message || 'Registration failed');
+                        }
                     }
                 } catch (error) {
+                    console.error('Auth error:', error);
                     messageEl.textContent = error.message;
                     messageEl.classList.remove('hidden');
                 } finally {
-                    // --- End Loading State ---
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalBtnText;
                 }
             }
 
             function handleLogout() {
-                localStorage.removeItem('authToken');
-                updateState({ isLoggedIn: false, userEmail: null, currentPage: 'home' });
+                BinBuddyAuth.logout();
+                updateState({ 
+                    isLoggedIn: false, 
+                    userInfo: null, 
+                    currentPage: 'home' 
+                });
+            }
+
+            function goToDashboard() {
+                const userInfo = BinBuddyAuth.getStoredUserInfo();
+                if (userInfo) {
+                    switch (userInfo.role) {
+                        case 'customer':
+                            window.location.href = 'customer-dashboard.html';
+                            break;
+                        case 'collector':
+                            window.location.href = 'collector-dashboard.html';
+                            break;
+                        case 'admin':
+                            window.location.href = 'admin-dashboard.html';
+                            break;
+                        default:
+                            console.error('Unknown user role:', userInfo.role);
+                    }
+                }
             }
 
             function checkAuthStatus() {
-                const token = localStorage.getItem('authToken');
-                if (token) {
-                    try {
-                        // Decode the token payload (this doesn't verify the signature)
-                        const payload = JSON.parse(atob(token.split('.')[1]));
-
-                        // Check if the token is expired
-                        if (payload.exp * 1000 > Date.now()) {
-                            updateState({ isLoggedIn: true, userEmail: payload.email });
-                            return;
-                        }
-                    } catch (error) {
-                        console.error("Error parsing token:", error);
-                        // If token is malformed, treat as logged out
-                    }
+                if (BinBuddyAuth.isAuthenticated()) {
+                    const userInfo = BinBuddyAuth.getStoredUserInfo();
+                    updateState({ 
+                        isLoggedIn: true, 
+                        userInfo: userInfo 
+                    });
+                } else {
+                    updateState({ 
+                        isLoggedIn: false, 
+                        userInfo: null 
+                    });
                 }
-                // No token, expired token, or invalid token
-                localStorage.removeItem('authToken'); // Clean up bad/expired tokens
-                updateState({ isLoggedIn: false, userEmail: null });
             }
 
             // =================================================================================
@@ -724,7 +766,8 @@
             // =================================================================================
 
             function init() {
-                checkAuthStatus(); // This will call updateState which calls render
+                checkAuthStatus();
+                render();
             }
 
             init();

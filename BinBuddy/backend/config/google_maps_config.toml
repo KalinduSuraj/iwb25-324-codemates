@@ -1,0 +1,136 @@
+# BinBuddy Google Maps API Configuration
+# Created: 2025-08-31
+# Instructions: Replace the placeholder values with your actual Google Maps API keys
+
+# ==============================================
+# GOOGLE MAPS API KEYS CONFIGURATION
+# ==============================================
+
+# Maps JavaScript API Key (for frontend map display)
+configurable string GOOGLE_MAPS_JS_API_KEY = "YOUR_MAPS_JAVASCRIPT_API_KEY_HERE";
+
+# Geocoding API Key (for address to coordinates conversion)
+configurable string GOOGLE_GEOCODING_API_KEY = "YOUR_GEOCODING_API_KEY_HERE";
+
+# Directions API Key (for route calculation and navigation)
+configurable string GOOGLE_DIRECTIONS_API_KEY = "YOUR_DIRECTIONS_API_KEY_HERE";
+
+# Places API Key (for location search and autocomplete)
+configurable string GOOGLE_PLACES_API_KEY = "YOUR_PLACES_API_KEY_HERE";
+
+# ==============================================
+# ENVIRONMENT-SPECIFIC CONFIGURATIONS
+# ==============================================
+
+# Development Environment
+[development]
+GOOGLE_MAPS_JS_API_KEY = "dev_maps_key_here"
+GOOGLE_GEOCODING_API_KEY = "dev_geocoding_key_here"
+GOOGLE_DIRECTIONS_API_KEY = "dev_directions_key_here"
+GOOGLE_PLACES_API_KEY = "dev_places_key_here"
+
+# Production Environment
+[production]
+GOOGLE_MAPS_JS_API_KEY = "prod_maps_key_here"
+GOOGLE_GEOCODING_API_KEY = "prod_geocoding_key_here"
+GOOGLE_DIRECTIONS_API_KEY = "prod_directions_key_here"
+GOOGLE_PLACES_API_KEY = "prod_places_key_here"
+
+# ==============================================
+# API USAGE LIMITS AND RESTRICTIONS
+# ==============================================
+
+# Rate limiting configuration
+MAPS_API_RATE_LIMIT = 100  # requests per minute
+GEOCODING_API_RATE_LIMIT = 50  # requests per minute
+DIRECTIONS_API_RATE_LIMIT = 25  # requests per minute
+
+# Geographic restrictions (for Galle, Sri Lanka)
+MAPS_API_REGION = "LK"  # Sri Lanka
+MAPS_API_LANGUAGE = "en"  # English
+DEFAULT_LOCATION_LAT = 6.0329  # Galle Fort latitude
+DEFAULT_LOCATION_LNG = 80.2168  # Galle Fort longitude
+
+# ==============================================
+# SECURITY SETTINGS
+# ==============================================
+
+# HTTP referrer restrictions (add your domains)
+ALLOWED_REFERRERS = [
+    "localhost:*",
+    "127.0.0.1:*",
+    "your-domain.com/*",
+    "*.your-domain.com/*"
+]
+
+# IP address restrictions (optional)
+ALLOWED_IPS = [
+    "127.0.0.1",
+    "your-server-ip-here"
+]
+
+# ==============================================
+# BILLING AND MONITORING
+# ==============================================
+
+# Daily quota limits (adjust based on your Google Cloud billing)
+DAILY_MAPS_QUOTA = 25000
+DAILY_GEOCODING_QUOTA = 2500
+DAILY_DIRECTIONS_QUOTA = 2500
+
+# Enable/disable APIs for cost control
+ENABLE_MAPS_API = true
+ENABLE_GEOCODING_API = true
+ENABLE_DIRECTIONS_API = true
+ENABLE_PLACES_API = true
+
+# ==============================================
+# INTEGRATION INSTRUCTIONS
+# ==============================================
+
+/*
+TO INTEGRATE GOOGLE MAPS WITH BINBUDDY:
+
+1. OBTAIN API KEYS:
+   - Go to Google Cloud Console (console.cloud.google.com)
+   - Create a new project or select existing project
+   - Enable the required APIs:
+     * Maps JavaScript API
+     * Geocoding API
+     * Directions API
+     * Places API
+   - Create API credentials (API Keys)
+   - Set up billing (required for production use)
+
+2. CONFIGURE RESTRICTIONS:
+   - Set HTTP referrer restrictions for security
+   - Set up daily quotas to control costs
+   - Configure geographic restrictions if needed
+
+3. UPDATE THIS FILE:
+   - Replace placeholder values with actual API keys
+   - Configure environment-specific settings
+   - Set appropriate rate limits and quotas
+
+4. FRONTEND INTEGRATION:
+   - Add Google Maps JavaScript API to HTML
+   - Use GOOGLE_MAPS_JS_API_KEY in script tag
+   - Implement map components for customer/collector apps
+
+5. BACKEND INTEGRATION:
+   - Use Geocoding API for address validation
+   - Use Directions API for route optimization
+   - Implement in Ballerina services for real-time tracking
+
+6. SECURITY BEST PRACTICES:
+   - Never expose API keys in client-side code
+   - Use environment variables for production
+   - Implement server-side proxy for sensitive operations
+   - Monitor API usage and set up alerts
+
+7. TESTING:
+   - Use development keys for testing
+   - Test with Galle, Sri Lanka locations
+   - Validate geocoding accuracy for local addresses
+   - Test route calculation between Galle areas
+*/
