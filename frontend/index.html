@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,43 +12,71 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F0FDF4; /* A very light green for the body background */
+            background-color: #F0FDF4;
+            /* A very light green for the body background */
         }
+
         /* Custom scrollbar for a more polished look */
         ::-webkit-scrollbar {
             width: 8px;
         }
+
         ::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
+
         ::-webkit-scrollbar-thumb {
-            background: #15803d; /* dark green */
+            background: #15803d;
+            /* dark green */
             border-radius: 10px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
-            background: #166534; /* slightly darker green */
+            background: #166534;
+            /* slightly darker green */
         }
+
         .nav-link-active {
-            color: #22c55e; /* bright green */
+            color: #22c55e;
+            /* bright green */
             font-weight: 600;
         }
+
         /* Animation for the modal */
         .modal-enter {
             animation: fadeIn 0.3s ease-out;
         }
+
         .modal-leave {
             animation: fadeOut 0.3s ease-in;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
+
         @keyframes fadeOut {
-            from { opacity: 1; transform: scale(1); }
-            to { opacity: 0; transform: scale(0.95); }
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+            }
         }
     </style>
 </head>
+
 <body class="text-gray-800">
 
     <!-- App Container -->
@@ -64,7 +93,7 @@
             <nav id="breadcrumb-container" class="mb-6 text-sm text-gray-500">
                 <!-- Breadcrumb will be injected here -->
             </nav>
-            
+
             <!-- Dynamic Page Content -->
             <div id="page-content">
                 <!-- Page content will be dynamically loaded here -->
@@ -90,9 +119,9 @@
         document.addEventListener('DOMContentLoaded', () => {
 
             // =================================================================================
-            // STATE MANAGEMENT & MOCK DATA
+            // STATE MANAGEMENT
             // =================================================================================
-            
+
             const state = {
                 currentPage: 'home',
                 isLoggedIn: false,
@@ -126,14 +155,14 @@
                         </div>
                         <div id="auth-section" class="hidden md:block">
                             ${state.isLoggedIn ?
-                                `<div class="flex items-center space-x-4">
+                        `<div class="flex items-center space-x-4">
                                     <span class="text-sm text-gray-700">Welcome, ${state.userEmail}</span>
                                     <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-red-600 transition-all shadow-sm">Logout</button>
                                 </div>` :
-                                `<button id="signInBtn" class="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-green-700 transition-all shadow-sm hover:shadow-lg transform hover:-translate-y-px">
+                        `<button id="signInBtn" class="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-green-700 transition-all shadow-sm hover:shadow-lg transform hover:-translate-y-px">
                                     Sign In
                                 </button>`
-                            }
+                    }
                         </div>
                          <div class="-mr-2 flex md:hidden">
                             <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-green-700 focus:outline-none">
@@ -151,14 +180,14 @@
                             <a href="#" class="nav-link text-gray-600 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium" data-page="contact">Contact</a>
                             <div class="mt-4 pt-4 border-t border-gray-200" id="mobile-auth-section">
                             ${state.isLoggedIn ?
-                                `<div class="flex flex-col space-y-3">
+                        `<div class="flex flex-col space-y-3">
                                     <span class="text-sm text-gray-700 px-3">Welcome, ${state.userEmail}</span>
                                     <button id="mobileLogoutBtn" class="w-full text-left bg-red-500 text-white px-3 py-2 rounded-md text-sm font-semibold hover:bg-red-600">Logout</button>
                                 </div>` :
-                                `<button id="mobileSignInBtn" class="w-full text-left bg-green-600 text-white px-3 py-2 rounded-md text-sm font-semibold hover:bg-green-700">
+                        `<button id="mobileSignInBtn" class="w-full text-left bg-green-600 text-white px-3 py-2 rounded-md text-sm font-semibold hover:bg-green-700">
                                     Sign In
                                 </button>`
-                            }
+                    }
                             </div>
                         </div>
                     </div>
@@ -209,7 +238,7 @@
                 </div>
                 `;
             };
-            
+
             // --- Breadcrumb Component ---
             const Breadcrumb = () => {
                 const pageName = state.currentPage.charAt(0).toUpperCase() + state.currentPage.slice(1);
@@ -224,7 +253,7 @@
                         </svg>
                     </li>
                     <li class="inline-flex items-center text-sm font-semibold text-green-700 truncate" aria-current="page">
-                        ${pageName.replace(/([A-Z])/g, ' $1').trim()} <!-- Add space for camelCase page names if any -->
+                        ${pageName.replace(/([A-Z])/g, ' $1').trim()}
                     </li>
                 </ol>
                 `;
@@ -298,7 +327,7 @@
                         </div>
                     </div>
                 `,
-                 about: `
+                about: `
                     <div class="max-w-4xl mx-auto bg-white p-10 rounded-2xl shadow-lg">
                         <h2 class="text-3xl font-bold text-center text-gray-900 sm:text-4xl">About BinBuddy</h2>
                         <p class="mt-6 text-gray-600 text-lg">
@@ -310,14 +339,12 @@
                         <div class="mt-12">
                             <h3 class="text-2xl font-bold text-center text-gray-800 mb-8">Meet Our Team</h3>
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                                <!-- Card 1 -->
                                 <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
                                     <img src="./assets/images/Shan.jpeg" alt="Team Member Shan" class="w-full h-48 object-cover">
                                     <div class="p-4 text-center">
                                         <h4 class="font-bold text-lg">Shan Indeewa</h4>
                                     </div>
                                 </div>
-                                <!-- Card 2 -->
                                 <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
                                     <img src="https://github.com/KalinduSuraj.png" alt="Team Member Kalindu Suraj" class="w-full h-48 object-cover">
                                     <div class="p-4 text-center">
@@ -325,14 +352,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Card 3 -->
                                 <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
                                     <img src="./assets/images/Harindu.jpeg" alt="Team Member Harindu" class="w-full h-48 object-cover">
                                     <div class="p-4 text-center">
                                         <h4 class="font-bold text-lg">Harindu De Silva</h4>
                                     </div>
                                 </div>
-                                <!-- Card 4 -->
                                 <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
                                     <img src="./assets/images/Amri.jpeg" alt="Team Member Amri" class="w-full h-48 object-cover">
                                     <div class="p-4 text-center">
@@ -369,7 +394,7 @@
                     </div>
                 `
             };
-            
+
             // --- Auth Modal Form Component ---
             const AuthForm = () => {
                 const isSignIn = state.isSignInForm;
@@ -383,11 +408,11 @@
                             </p>
                         </div>
                         <button id="closeModalBtn" class="p-1 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600">
-                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                         </button>
                     </div>
                     
-                    <form id="authForm" class="mt-8 space-y-4">
+                    <form id="authForm" class="mt-8 space-y-4" novalidate>
                         ${!isSignIn ? `
                         <div>
                             <label for="name" class="text-sm font-medium text-gray-700 sr-only">Full Name</label>
@@ -462,11 +487,11 @@
                         }, 300); // match animation duration
                     }
                 }
-                
+
                 // Add event listeners for newly rendered elements
                 addEventListeners();
             }
-            
+
             function updateState(newState) {
                 Object.assign(state, newState);
                 render();
@@ -500,7 +525,7 @@
                 if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
                 if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);
 
-                 // Mobile Menu Toggle
+                // Mobile Menu Toggle
                 const mobileMenuButton = document.getElementById('mobile-menu-button');
                 const mobileMenu = document.getElementById('mobile-menu');
                 if (mobileMenuButton) {
@@ -509,20 +534,18 @@
                     });
                 }
             }
-            
+
             function addModalEventListeners() {
-                document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-                document.getElementById('toggleFormBtn').addEventListener('click', toggleAuthForm);
-                document.getElementById('authForm').addEventListener('submit', handleAuthFormSubmit);
-                document.getElementById('authModal').addEventListener('click', (e) => {
-                    if (e.target.id === 'authModal') closeModal(); // Close modal on background click
-                });
+                document.getElementById('authForm')?.addEventListener('submit', handleAuthFormSubmit);
+                document.getElementById('closeModalBtn')?.addEventListener('click', closeModal);
+                document.getElementById('toggleFormBtn')?.addEventListener('click', toggleAuthForm);
             }
+
 
             // =================================================================================
             // AUTHENTICATION LOGIC
             // =================================================================================
-            
+
             function openModal() {
                 updateState({ isModalOpen: true, isSignInForm: true });
             }
@@ -532,13 +555,42 @@
             }
 
             function toggleAuthForm() {
-                updateState({ isSignInForm: !state.isSignInForm });
-                // We need to re-render the modal content without closing the modal
+                // Toggle the form state and re-render only the modal content
+                state.isSignInForm = !state.isSignInForm;
                 const modalContent = document.getElementById('modalContent');
-                modalContent.innerHTML = AuthForm();
-                addModalEventListeners();
+                if (modalContent) {
+                    modalContent.innerHTML = AuthForm();
+                    addModalEventListeners(); // Re-attach listeners to the new form
+                }
             }
-            
+            async function mockLogin(email, password) {
+                    // Simulate a network delay of 500ms
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    // --- Test Case 1: Successful Customer Login ---
+                    if (email === 'customer@test.com' && password === 'pass123') {
+                        console.log('Mock Login: Success as customer');
+                        return {
+                            token: 'mock-customer-token-xyz-is-very-long-and-secure',
+                            role: 'customer'
+                        };
+                    }
+                    // --- Test Case 2: Successful Admin Login ---
+                    else if (email === 'admin@test.com' && password === 'pass456') {
+                        console.log('Mock Login: Success as admin');
+                        return {
+                            token: 'mock-admin-token-abc-is-also-very-secure',
+                            role: 'admin'
+                        };
+                    }
+                    // --- Test Case 3: Failed Login ---
+                    else {
+                        console.log('Mock Login: Failed');
+                        throw new Error('Invalid email or password.');
+                    }
+                }
+
+
             async function handleAuthFormSubmit(e) {
                 e.preventDefault();
                 const form = e.target;
@@ -554,65 +606,67 @@
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = `<span class="flex items-center justify-center"><svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...</span>`;
 
+            
                 try {
                     if (state.isSignInForm) {
                         // --- API SIGN IN ---
-                        // ** REPLACE WITH YOUR ACTUAL API ENDPOINT **
-                        // const response = await fetch('https://api.example.com/login', {
-                        //     method: 'POST',
-                        //     headers: { 'Content-Type': 'application/json' },
-                        //     body: JSON.stringify({ email, password })
-                        // });
-                        // const data = await response.json();
-                        // if (!response.ok) {
-                        //     throw new Error(data.message || 'Login failed.');
-                        // }
-                        
-                        // MOCK API RESPONSE (for demonstration without a real API)
-                        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
-                        if (email === 'user@binbuddy.com' && password === 'password123') {
-                            const mockPayload = { email: email, exp: Date.now() + 3600 * 1000 };
-                            const mockToken = `mock_header.${btoa(JSON.stringify(mockPayload))}.mock_signature`;
-                            localStorage.setItem('authToken', mockToken);
-                            checkAuthStatus(); // This will update state and re-render
-                            closeModal();
+                        const response = await fetch('https://api.example.com/login', { 
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, password })
+                        });
+
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(data.message || 'Login failed.');
+                        }
+
+                        // Store token from backend response
+                        if (data.token) {
+                            localStorage.setItem('authToken', data.token);
                         } else {
-                            throw new Error('Invalid email or password.');
+                            throw new Error("No token received from server.");
+                        }
+
+                        // Check role and redirect
+                        if (data.role === 'customer') {
+                            window.location.href = './customer.html';
+                        } else if (data.role === 'admin') {
+                            window.location.href = './admin.html';
+                        } else {
+                            throw new Error('Unknown user role. Please contact support.');
                         }
 
                     } else {
                         // --- API SIGN UP ---
                         const name = form.name.value;
-                        // ** REPLACE WITH YOUR ACTUAL API ENDPOINT **
-                        // const response = await fetch('https://api.example.com/register', {
-                        //     method: 'POST',
-                        //     headers: { 'Content-Type': 'application/json' },
-                        //     body: JSON.stringify({ name, email, password })
-                        // });
-                        // const data = await response.json();
-                        // if (!response.ok) {
-                        //     throw new Error(data.message || 'Sign-up failed.');
-                        // }
+                        const response = await fetch('https://api.example.com/register', { 
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name, email, password })
+                        });
 
-                        // MOCK API RESPONSE (for demonstration without a real API)
-                        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
-                        if (!name || !email || !password) {
-                            throw new Error('Please fill in all fields.');
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(data.message || 'Sign-up failed.');
                         }
-                        
-                        console.log('Signing up user:', { name, email });
-                        
-                        // Switch to sign-in with a success message
-                        updateState({ isSignInForm: true });
-                        const modalContent = document.getElementById('modalContent');
-                        modalContent.innerHTML = AuthForm();
-                        addModalEventListeners();
-                        const newSignInForm = document.getElementById('authForm');
-                        newSignInForm.email.value = email;
-                        const successMessage = document.createElement('p');
-                        successMessage.className = 'text-sm text-green-600 -mt-2 mb-4';
-                        successMessage.textContent = 'Account created successfully! Please sign in.';
-                        newSignInForm.prepend(successMessage);
+
+                        // Automatically switch to sign-in form with a success message
+                        toggleAuthForm(); // This flips the state to the sign-in form
+
+                        // Use a short delay to ensure the DOM is updated before adding the success message
+                        setTimeout(() => {
+                            const newSignInForm = document.getElementById('authForm');
+                            if (newSignInForm) {
+                                newSignInForm.email.value = email; // Pre-fill email
+                                const successMessage = document.createElement('p');
+                                successMessage.className = 'text-sm text-green-600 -mt-2 mb-4';
+                                successMessage.textContent = 'Account created successfully! Please sign in.';
+                                newSignInForm.prepend(successMessage);
+                            }
+                        }, 100);
                     }
                 } catch (error) {
                     messageEl.textContent = error.message;
@@ -626,26 +680,28 @@
 
             function handleLogout() {
                 localStorage.removeItem('authToken');
-                checkAuthStatus();
+                updateState({ isLoggedIn: false, userEmail: null, currentPage: 'home' });
             }
 
             function checkAuthStatus() {
                 const token = localStorage.getItem('authToken');
                 if (token) {
                     try {
+                        // Decode the token payload (this doesn't verify the signature)
                         const payload = JSON.parse(atob(token.split('.')[1]));
-                        if (payload.exp > Date.now()) {
-                            // Token is valid and not expired
+
+                        // Check if the token is expired
+                        if (payload.exp * 1000 > Date.now()) {
                             updateState({ isLoggedIn: true, userEmail: payload.email });
                             return;
                         }
                     } catch (error) {
                         console.error("Error parsing token:", error);
-                        // Invalid token, treat as logged out
+                        // If token is malformed, treat as logged out
                     }
                 }
-                // No token or expired/invalid token
-                localStorage.removeItem('authToken'); // Clean up bad tokens
+                // No token, expired token, or invalid token
+                localStorage.removeItem('authToken'); // Clean up bad/expired tokens
                 updateState({ isLoggedIn: false, userEmail: null });
             }
 
@@ -663,5 +719,5 @@
     </script>
 
 </body>
-</html>
 
+</html>
