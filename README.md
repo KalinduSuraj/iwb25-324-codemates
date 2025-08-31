@@ -1,6 +1,6 @@
 # BinBuddy
 
-BinBuddy is a project with a **Ballerina backend** and a **React + Vite frontend**.  
+BinBuddy is a project with a **Ballerina backend** .  
 
 The backend provides API services, and the frontend interacts with these APIs.
 
@@ -10,7 +10,7 @@ The backend provides API services, and the frontend interacts with these APIs.
 
     repo-root/
          ├── BinBuddy/ # Ballerina backend
-         └── frontend/ # React + Vite frontend
+         └── frontend/ 
   
 ---
 
@@ -19,8 +19,6 @@ The backend provides API services, and the frontend interacts with these APIs.
 Make sure you have installed:
 
 - [Ballerina](https://ballerina.io/download/)
-- [Node.js](https://nodejs.org/) (v18+ recommended)
-- npm (comes with Node.js)
 - Git
 
 ---
@@ -45,14 +43,8 @@ The Ballerina service will run on http://localhost:8080.
   
   - http://localhost:8080/hello/greeting
 
-### 3. Run the Frontend (React + Vite)
-
-```bash
-cd ../frontend
-npm install
-npm run dev
-```
-The frontend runs on http://localhost:5173.
+### 3. Run the Frontend 
+- open FrontEnd/index.html
 
 Open it in your browser and click buttons to call the backend APIs.
 
