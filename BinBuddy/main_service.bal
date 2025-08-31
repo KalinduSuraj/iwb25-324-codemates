@@ -4,6 +4,8 @@ import ballerina/time;
 import ballerina/sql;
 import ballerinax/mysql;
 import ballerinax/mysql.driver as _;
+import ballerinax/mssql;
+import ballerinax/mssql.driver as _;
 
 # BinBuddy Main Service Entry Point
 # This file provides a simple health check and routing information
@@ -15,7 +17,7 @@ import ballerinax/mysql.driver as _;
 # Main HTTP listener on port 8084 for general information
 listener http:Listener mainListener = new(8084);
 
-# Simple database health check function
+# Simple database health check function (MySQL)
 function checkDatabaseHealth() returns boolean {
     do {
         mysql:Client dbClient = check new (
@@ -30,7 +32,22 @@ function checkDatabaseHealth() returns boolean {
         error? closeResult = dbClient.close();
         return true;
     } on fail error e {
-        log:printWarn("Database health check failed", e);
+        log:printWarn("MySQL database health check failed", e);
+        return false;
+    }
+}
+
+# SQL Server database health check function
+function checkSQLServerHealth() returns boolean {
+    do {
+        string connectionString = "server=(localdb)\\MSSQLLocalDB;database=binbuddy_db;integratedSecurity=true;encrypt=false;";
+        mssql:Client dbClient = check new (connectionString);
+        sql:ParameterizedQuery healthQuery = `SELECT 1 as health_check`;
+        sql:ExecutionResult result = check dbClient->execute(healthQuery);
+        error? closeResult = dbClient.close();
+        return true;
+    } on fail error e {
+        log:printWarn("SQL Server database health check failed", e);
         return false;
     }
 }
@@ -98,6 +115,28 @@ service / on mainListener {
         };
         
         return dbHealthData;
+    }
+
+    # SQL Server database health check endpoint
+    resource function get health/sqlserver() returns json {
+        log:printInfo("SQL Server database health check requested");
+        
+        boolean sqlServerHealthy = checkSQLServerHealth();
+        
+        json sqlServerHealthData = {
+            "service": "BinBuddy SQL Server Database",
+            "status": sqlServerHealthy ? "healthy" : "unhealthy", 
+            "timestamp": time:utcNow(),
+            "database": {
+                "type": "SQL Server LocalDB",
+                "instance": "MSSQLLocalDB",
+                "database": "binbuddy_db",
+                "connection": sqlServerHealthy ? "connected" : "disconnected",
+                "message": sqlServerHealthy ? "SQL Server database is responding correctly" : "SQL Server connection failed"
+            }
+        };
+        
+        return sqlServerHealthData;
     }
 
     # Welcome endpoint with API information

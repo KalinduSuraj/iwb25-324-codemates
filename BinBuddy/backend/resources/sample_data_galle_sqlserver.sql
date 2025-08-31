@@ -3,8 +3,8 @@
 -- Location: Galle District, Southern Province, Sri Lanka
 -- Database: SQL Server 2022
 
--- Use existing testconnect database
-USE testconnect;
+-- Use our binbuddy_db database
+USE binbuddy_db;
 GO
 
 -- ==============================================

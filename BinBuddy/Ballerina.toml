@@ -16,3 +16,13 @@ version = "1.11.0"
 org = "ballerinax"
 name = "mysql.driver"
 version = "1.6.0"
+
+[[dependency]]
+org = "ballerinax"
+name = "mssql"
+version = "1.7.0"
+
+[[dependency]]
+org = "ballerinax"
+name = "mssql.driver"
+version = "1.6.0"
