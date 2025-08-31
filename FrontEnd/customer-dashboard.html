@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - BinBuddy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F0FDF4;
+        }
+        
+         ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+         ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+         ::-webkit-scrollbar-thumb {
+            background: #15803d;
+            border-radius: 10px;
+        }
+        
+         ::-webkit-scrollbar-thumb:hover {
+            background: #166534;
+        }
+        
+        .nav-link-active {
+            color: #22c55e;
+            font-weight: 600;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-40">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index-enhanced.html" class="flex-shrink-0 text-2xl font-bold text-green-700 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" />
+                        </svg> BinBuddy
+                    </a>
+                    <div class="hidden md:block ml-10">
+                        <div class="flex items-baseline space-x-4">
+                            <span class="text-lg text-gray-600">Customer Dashboard</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="welcomeUser" class="text-sm text-gray-700">Welcome, Customer</span>
+                    <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-red-600 transition-all shadow-sm">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Dashboard Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Customer Dashboard</h1>
+            <p class="text-gray-600 mt-2">Manage your waste collection services and track your requests</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" id="statsContainer">
+            <!-- Stats will be loaded here -->
+        </div>
+
+        <!-- Service Requests Table -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-900">My Service Requests</h2>
+                <button id="newRequestBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                    New Request
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Request ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Requests will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Current Subscriptions -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-900">Current Subscriptions</h2>
+                <button id="newSubscriptionBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                    New Subscription
+                </button>
+            </div>
+            <div id="subscriptionsContainer" class="p-6">
+                <!-- Subscriptions will be loaded here -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- New Request Modal -->
+    <div id="requestModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold text-gray-900">New Service Request</h3>
+                    <button id="closeRequestModalBtn" class="text-gray-400 hover:text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <form id="requestForm" class="space-y-4">
+                    <div>
+                        <label for="requestType" class="block text-sm font-medium text-gray-700 mb-1">Request Type</label>
+                        <select name="requestType" id="requestType" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="">Select type...</option>
+                            <option value="Regular Pickup">Regular Pickup</option>
+                            <option value="Large Item Pickup">Large Item Pickup</option>
+                            <option value="Recycling Pickup">Recycling Pickup</option>
+                            <option value="Hazardous Waste">Hazardous Waste</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="pickupDate" class="block text-sm font-medium text-gray-700 mb-1">Preferred Pickup Date</label>
+                        <input type="date" name="pickupDate" id="pickupDate" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+
+                    <div>
+                        <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Pickup Address</label>
+                        <textarea name="address" id="address" rows="3" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter full address..."></textarea>
+                    </div>
+
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Additional Details</label>
+                        <textarea name="description" id="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Any special instructions or details..."></textarea>
+                    </div>
+
+                    <div id="requestMessage" class="text-sm text-red-500 hidden"></div>
+
+                    <div class="flex space-x-3 pt-4">
+                        <button type="button" id="cancelRequestBtn" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            Submit Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Subscription Modal -->
+    <div id="subscriptionModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold text-gray-900">New Subscription</h3>
+                    <button id="closeSubscriptionModalBtn" class="text-gray-400 hover:text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <form id="subscriptionForm" class="space-y-4">
+                    <div>
+                        <label for="serviceType" class="block text-sm font-medium text-gray-700 mb-1">Service Type</label>
+                        <select name="serviceType" id="serviceType" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="">Select service...</option>
+                            <option value="Weekly Pickup">Weekly Pickup</option>
+                            <option value="Bi-weekly Pickup">Bi-weekly Pickup</option>
+                            <option value="Monthly Pickup">Monthly Pickup</option>
+                            <option value="Recycling Service">Recycling Service</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="startDate" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                        <input type="date" name="startDate" id="startDate" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+
+                    <div>
+                        <label for="subAddress" class="block text-sm font-medium text-gray-700 mb-1">Service Address</label>
+                        <textarea name="subAddress" id="subAddress" rows="3" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter service address..."></textarea>
+                    </div>
+
+                    <div id="subscriptionMessage" class="text-sm text-red-500 hidden"></div>
+
+                    <div class="flex space-x-3 pt-4">
+                        <button type="button" id="cancelSubscriptionBtn" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            Subscribe
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load the BinBuddy Auth API -->
+    <script src="js/auth-api.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async() => {
+                    // Check if user is authenticated
+                    if (!BinBuddyAuth.isAuthenticated()) {
+                        window.location.href = 'index-enhanced.html';
+                        return;
+                    }
+
+                    const userInfo = BinBuddyAuth.getStoredUserInfo();
+                    if (userInfo.role !== 'customer') {
+                        window.location.href = 'index-enhanced.html';
+                        return;
+                    }
+
+                    // Update welcome message
+                    document.getElementById('welcomeUser').textContent = `Welcome, ${userInfo.profile?.full_name || userInfo.email}`;
+
+                    // State management
+                    let dashboardData = {
+                        requests: [],
+                        subscriptions: [],
+                        stats: {}
+                    };
+
+                    // Load dashboard data
+                    await loadDashboardData();
+
+                    // Event listeners
+                    document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+                    document.getElementById('newRequestBtn').addEventListener('click', () => openModal('requestModal'));
+                    document.getElementById('newSubscriptionBtn').addEventListener('click', () => openModal('subscriptionModal'));
+
+                    // Modal close handlers
+                    document.getElementById('closeRequestModalBtn').addEventListener('click', () => closeModal('requestModal'));
+                    document.getElementById('closeSubscriptionModalBtn').addEventListener('click', () => closeModal('subscriptionModal'));
+                    document.getElementById('cancelRequestBtn').addEventListener('click', () => closeModal('requestModal'));
+                    document.getElementById('cancelSubscriptionBtn').addEventListener('click', () => closeModal('subscriptionModal'));
+
+                    // Form handlers
+                    document.getElementById('requestForm').addEventListener('submit', handleNewRequest);
+                    document.getElementById('subscriptionForm').addEventListener('submit', handleNewSubscription);
+
+                    // Set minimum date to today
+                    const today = new Date().toISOString().split('T')[0];
+                    document.getElementById('pickupDate').min = today;
+                    document.getElementById('startDate').min = today;
+
+                    async function loadDashboardData() {
+                        try {
+                            // Load customer requests
+                            const requestsResponse = await BinBuddyAuth.getCustomerRequests();
+                            if (requestsResponse.success) {
+                                dashboardData.requests = requestsResponse.data;
+                                renderRequests();
+                            }
+
+                            // Load customer subscriptions
+                            const subscriptionsResponse = await BinBuddyAuth.getCustomerSubscriptions();
+                            if (subscriptionsResponse.success) {
+                                dashboardData.subscriptions = subscriptionsResponse.data;
+                                renderSubscriptions();
+                            }
+
+                            // Load customer dashboard stats
+                            const dashboardResponse = await BinBuddyAuth.getCustomerDashboard();
+                            if (dashboardResponse.success) {
+                                dashboardData.stats = dashboardResponse.data;
+                                renderStats();
+                            }
+
+                        } catch (error) {
+                            console.error('Error loading dashboard data:', error);
+                        }
+                    }
+
+                    function renderStats() {
+                        const stats = dashboardData.stats;
+                        const statsContainer = document.getElementById('statsContainer');
+
+                        statsContainer.innerHTML = `
+                    <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-green-100 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Total Requests</p>
+                                <p class="text-2xl font-bold text-gray-900">${stats.total_requests || 0}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-blue-100 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Active Subscriptions</p>
+                                <p class="text-2xl font-bold text-gray-900">${stats.active_subscriptions || 0}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-yellow-100 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Pending Requests</p>
+                                <p class="text-2xl font-bold text-gray-900">${stats.pending_requests || 0}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-lg card-hover">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-green-100 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Completed Requests</p>
+                                <p class="text-2xl font-bold text-gray-900">${stats.completed_requests || 0}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                    }
+
+                    function renderRequests() {
+                        const requestsTableBody = document.getElementById('requestsTableBody');
+
+                        if (dashboardData.requests.length === 0) {
+                            requestsTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                No service requests found. Create your first request!
+                            </td>
+                        </tr>
+                    `;
+                            return;
+                        }
+
+                        requestsTableBody.innerHTML = dashboardData.requests.map(request => `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            #${request.request_id}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${request.request_type}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(request.status)}">
+                                ${request.status}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${new Date(request.pickup_date).toLocaleDateString()}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
+                            ${request.address}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button class="text-green-600 hover:text-green-900" onclick="viewRequest(${request.request_id})">
+                                View
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+                    }
+
+                    function renderSubscriptions() {
+                        const subscriptionsContainer = document.getElementById('subscriptionsContainer');
+
+                        if (dashboardData.subscriptions.length === 0) {
+                            subscriptionsContainer.innerHTML = `
+                        <div class="text-center py-8">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            <p class="text-gray-500">No subscriptions found. Create your first subscription!</p>
+                        </div>
+                    `;
+                            return;
+                        }
+
+                        subscriptionsContainer.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        ${dashboardData.subscriptions.map(subscription => `
+                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                <div class="flex justify-between items-start mb-3">
+                                    <h3 class="font-semibold text-gray-900">${subscription.service_type}</h3>
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(subscription.status)}">
+                                        ${subscription.status}
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">Start Date: ${new Date(subscription.start_date).toLocaleDateString()}</p>
+                                <p class="text-sm text-gray-600 mb-3">${subscription.address}</p>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-900 text-sm" onclick="viewSubscription(${subscription.subscription_id})">
+                                        View Details
+                                    </button>
+                                    ${subscription.status === 'Active' ? 
+                                        `<button class="text-red-600 hover:text-red-900 text-sm" onclick="cancelSubscription(${subscription.subscription_id})">
+                                            Cancel
+                                        </button>` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            function getStatusColor(status) {
+                const colors = {
+                    'Pending': 'bg-yellow-100 text-yellow-800',
+                    'In Progress': 'bg-blue-100 text-blue-800',
+                    'Completed': 'bg-green-100 text-green-800',
+                    'Cancelled': 'bg-red-100 text-red-800',
+                    'Active': 'bg-green-100 text-green-800',
+                    'Inactive': 'bg-gray-100 text-gray-800'
+                };
+                return colors[status] || 'bg-gray-100 text-gray-800';
+            }
+
+            function openModal(modalId) {
+                const modal = document.getElementById(modalId);
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+
+            function closeModal(modalId) {
+                const modal = document.getElementById(modalId);
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                
+                // Reset forms
+                if (modalId === 'requestModal') {
+                    document.getElementById('requestForm').reset();
+                    document.getElementById('requestMessage').classList.add('hidden');
+                } else if (modalId === 'subscriptionModal') {
+                    document.getElementById('subscriptionForm').reset();
+                    document.getElementById('subscriptionMessage').classList.add('hidden');
+                }
+            }
+
+            async function handleNewRequest(e) {
+                e.preventDefault();
+                const form = e.target;
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const messageEl = document.getElementById('requestMessage');
+                const originalBtnText = submitBtn.innerHTML;
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = 'Submitting...';
+                messageEl.classList.add('hidden');
+
+                try {
+                    const requestData = {
+                        request_type: form.requestType.value,
+                        pickup_date: form.pickupDate.value,
+                        address: form.address.value,
+                        description: form.description.value || null
+                    };
+
+                    const response = await BinBuddyAuth.createServiceRequest(requestData);
+                    
+                    if (response.success) {
+                        closeModal('requestModal');
+                        await loadDashboardData(); // Refresh data
+                        showSuccessMessage('Service request created successfully!');
+                    } else {
+                        throw new Error(response.message || 'Failed to create request');
+                    }
+                } catch (error) {
+                    console.error('Error creating request:', error);
+                    messageEl.textContent = error.message;
+                    messageEl.classList.remove('hidden');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
+            }
+
+            async function handleNewSubscription(e) {
+                e.preventDefault();
+                const form = e.target;
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const messageEl = document.getElementById('subscriptionMessage');
+                const originalBtnText = submitBtn.innerHTML;
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = 'Creating...';
+                messageEl.classList.add('hidden');
+
+                try {
+                    const subscriptionData = {
+                        service_type: form.serviceType.value,
+                        start_date: form.startDate.value,
+                        address: form.subAddress.value
+                    };
+
+                    const response = await BinBuddyAuth.createSubscription(subscriptionData);
+                    
+                    if (response.success) {
+                        closeModal('subscriptionModal');
+                        await loadDashboardData(); // Refresh data
+                        showSuccessMessage('Subscription created successfully!');
+                    } else {
+                        throw new Error(response.message || 'Failed to create subscription');
+                    }
+                } catch (error) {
+                    console.error('Error creating subscription:', error);
+                    messageEl.textContent = error.message;
+                    messageEl.classList.remove('hidden');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
+            }
+
+            function showSuccessMessage(message) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 fade-in';
+                successDiv.textContent = message;
+                document.body.appendChild(successDiv);
+                
+                setTimeout(() => {
+                    successDiv.remove();
+                }, 3000);
+            }
+
+            function handleLogout() {
+                BinBuddyAuth.logout();
+                window.location.href = 'index-enhanced.html';
+            }
+
+            // Global functions for table actions
+            window.viewRequest = (requestId) => {
+                const request = dashboardData.requests.find(r => r.request_id === requestId);
+                if (request) {
+                    alert(`Request Details:\n\nID: #${request.request_id}\nType: ${request.request_type}\nStatus: ${request.status}\nDate: ${new Date(request.pickup_date).toLocaleDateString()}\nAddress: ${request.address}\nDescription: ${request.description || 'None'}`);
+                }
+            };
+
+            window.viewSubscription = (subscriptionId) => {
+                const subscription = dashboardData.subscriptions.find(s => s.subscription_id === subscriptionId);
+                if (subscription) {
+                    alert(`Subscription Details:\n\nID: #${subscription.subscription_id}\nService: ${subscription.service_type}\nStatus: ${subscription.status}\nStart Date: ${new Date(subscription.start_date).toLocaleDateString()}\nAddress: ${subscription.address}`);
+                }
+            };
+
+            window.cancelSubscription = async (subscriptionId) => {
+                if (confirm('Are you sure you want to cancel this subscription?')) {
+                    try {
+                        const response = await BinBuddyAuth.cancelSubscription(subscriptionId);
+                        if (response.success) {
+                            await loadDashboardData();
+                            showSuccessMessage('Subscription cancelled successfully!');
+                        } else {
+                            alert('Failed to cancel subscription: ' + (response.message || 'Unknown error'));
+                        }
+                    } catch (error) {
+                        console.error('Error cancelling subscription:', error);
+                        alert('Error cancelling subscription');
+                    }
+                }
+            };
+        });
+    </script>
+
+</body>
+
+</html>
