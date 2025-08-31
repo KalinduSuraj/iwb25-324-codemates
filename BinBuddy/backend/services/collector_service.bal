@@ -3,11 +3,9 @@ import ballerina/log;
 import ballerina/time;
 import ballerina/uuid;
 
-# Collector service HTTP listener
-listener http:Listener collectorListener = new(8082);
-
 # Collector Service for BinBuddy
 # Handles all collector-related operations including registration, request management, and tracking
+# Note: Using shared listener from main service (port 8084)
 
 # Simple response helper functions
 # + caller - HTTP caller object
@@ -151,6 +149,9 @@ public type RequestAction record {|
     decimal? latitude?;
     decimal? longitude?;
 |};
+
+# HTTP listener for collector service (if running independently)
+listener http:Listener collectorListener = new(8082);
 
 # Collector Service Configuration
 @http:ServiceConfig {

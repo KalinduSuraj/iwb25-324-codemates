@@ -9,8 +9,7 @@ import ballerina/uuid;
 import BinBuddy.backend.utils.db_connection as db;
 import BinBuddy.backend.utils.response_handler as response;
 
-# Customer service HTTP listener
-listener http:Listener customerListener = new(8081);
+# Note: Using shared listener from main service (port 8084)
 
 # Customer data types
 public type CustomerProfile record {|
@@ -122,7 +121,7 @@ public type FeedbackPayload record {|
         allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     }
 }
-service /api/customer on customerListener {
+service /api/customer {
 
     # Customer registration
     # Register a new customer with profile details and location
