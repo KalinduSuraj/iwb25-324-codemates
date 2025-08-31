@@ -356,4 +356,667 @@ service / on mainListener {
         
         return configData;
     }
+
+    # ==============================================
+    # CUSTOMER SERVICE ENDPOINTS - /api/customer
+    # ==============================================
+
+    # Customer registration
+    resource function post api/customer/register(http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Customer registration requested");
+        
+        json|error payload = req.getJsonPayload();
+        if (payload is error) {
+            json errorResponse = {
+                "success": false,
+                "message": "Invalid request payload",
+                "timestamp": time:utcToString(time:utcNow())
+            };
+            check caller->respond(errorResponse);
+            return;
+        }
+
+        json customerData = <json>payload;
+        
+        // Mock registration response - implement actual database logic here
+        json response = {
+            "success": true,
+            "message": "Customer registered successfully",
+            "data": {
+                "customer_id": 123,
+                "email": "customer@example.com",
+                "full_name": "Sample Customer",
+                "registration_date": time:utcToString(time:utcNow())
+            },
+            "timestamp": time:utcToString(time:utcNow())
+        };
+        
+        check caller->respond(response);
+    }
+
+    # Customer login
+    resource function post api/customer/login(http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Customer login requested");
+        
+        json|error payload = req.getJsonPayload();
+        if (payload is error) {
+            json errorResponse = {
+                "success": false,
+                "message": "Invalid login credentials",
+                "timestamp": time:utcToString(time:utcNow())
+            };
+            check caller->respond(errorResponse);
+            return;
+        }
+
+        json loginData = <json>payload;
+        
+        // Mock login response - implement actual authentication here
+        json response = {
+            "success": true,
+            "message": "Login successful",
+            "data": {
+                "customer_id": 123,
+                "email": "customer@example.com",
+                "session_token": "mock_session_token_" + time:utcNow()[0].toString(),
+                "profile": {
+                    "full_name": "Sample Customer",
+                    "phone": "+94701234567",
+                    "subscription_type": "premium"
+                }
+            },
+            "timestamp": time:utcToString(time:utcNow())
+        };
+        
+        check caller->respond(response);
+    }
+
+    # Create collection request
+    resource function post api/customer/[int customerId]/requests(http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Collection request creation for customer: " + customerId.toString());
+        
+        json|error payload = req.getJsonPayload();
+        if (payload is error) {
+            json errorResponse = {
+                "success": false,
+                "message": "Invalid request data",
+                "timestamp": time:utcToString(time:utcNow())
+            };
+            check caller->respond(errorResponse);
+            return;
+        }
+
+        json requestData = <json>payload;
+        
+        // Mock request creation - implement actual database logic here
+        json response = {
+            "success": true,
+            "message": "Collection request created successfully",
+            "data": {
+                "request_id": 456,
+                "customer_id": customerId,
+                "request_type": "immediate",
+                "status": "pending",
+                "pickup_address": "Sample Address",
+                "estimated_weight": 5.0,
+                "created_at": time:utcToString(time:utcNow())
+            },
+            "timestamp": time:utcToString(time:utcNow())
+        };
+        
+        check caller->respond(response);
+    }
+
+    # Get customer requests
+    resource function get api/customer/[int customerId]/requests(http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Getting requests for customer: " + customerId.toString());
+        
+        // Mock customer requests - implement actual database query here
+        json response = {
+            "success": true,
+            "message": "Customer requests retrieved",
+            "data": [
+                {
+                    "request_id": 1,
+                    "request_type": "scheduled",
+                    "status": "completed",
+                    "pickup_address": "No. 15, Church Street, Galle Fort",
+                    "waste_type": "general",
+                    "price": 750.00,
+                    "created_at": "2025-08-30T08:00:00Z",
+                    "completed_at": "2025-08-30T08:25:00Z"
+                },
+                {
+                    "request_id": 5,
+                    "request_type": "scheduled", 
+                    "status": "accepted",
+                    "pickup_address": "No. 78, Lighthouse Street, Galle Fort",
+                    "waste_type": "general",
+                    "price": 600.00,
+                    "created_at": "2025-08-31T08:30:00Z"
+                }
+            ],
+            "timestamp": time:utcToString(time:utcNow())
+        };
+        
+        check caller->respond(response);
+    }
+
+    # Track collection request
+    resource function get api/customer/[int customerId]/requests/[int requestId]/track(http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Tracking request " + requestId.toString() + " for customer " + customerId.toString());
+        
+        // Mock tracking data - implement actual tracking logic here
+        json response = {
+            "success": true,
+            "message": "Tracking information retrieved",
+            "data": {
+                "request_id": requestId,
+                "status": "in_progress",
+                "collector": {
+                    "name": "Lasith Kumara",
+                    "phone": "+94771234568",
+                    "vehicle": "Small Truck - CAL-5678"
+                },
+                "current_location": {
+                    "latitude": 6.0089,
+                    "longitude": 80.2489,
+                    "last_updated": time:utcToString(time:utcNow())
+                },
+                "estimated_arrival": "15 minutes",
+                "tracking_updates": [
+                    {
+                        "timestamp": "2025-08-31T13:00:00Z",
+                        "status": "Collector arrived at pickup location"
+                    },
+                    {
+                        "timestamp": "2025-08-31T13:05:00Z", 
+                        "status": "Loading waste into vehicle"
+                    }
+                ]
+            },
+            "timestamp": time:utcToString(time:utcNow())
+        };
+        
+        check caller->respond(response);
+    }
+
+    # Customer dashboard
+    resource function get api/customer/[int customerId]/dashboard(http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Dashboard requested for customer: " + customerId.toString());
+        
+        // Mock dashboard data - implement actual database queries here
+        json response = {
+            "success": true,
+            "message": "Dashboard data retrieved",
+            "data": {
+                "customer_id": customerId,
+                "profile": {
+                    "full_name": "Asanka Rajapaksha",
+                    "email": "asanka.rajapaksha@gmail.com",
+                    "phone": "+94701234569",
+                    "subscription_type": "premium",
+                    "address": "No. 78, Lighthouse Street, Galle Fort"
+                },
+                "statistics": {
+                    "total_requests": 5,
+                    "completed_requests": 3,
+                    "pending_requests": 1,
+                    "total_spent": 2100.00,
+                    "waste_collected_kg": 25.5
+                },
+                "recent_requests": [
+                    {
+                        "request_id": 5,
+                        "status": "accepted",
+                        "pickup_date": "2025-08-31T16:00:00Z",
+                        "waste_type": "general"
+                    }
+                ]
+            },
+            "timestamp": time:utcToString(time:utcNow())
+        };
+        
+        check caller->respond(response);
+    }
+
+    # ==============================================
+    # COLLECTOR SERVICE ENDPOINTS - /api/collector
+    # ==============================================
+
+    # Collector registration
+    resource function post api/collector/register(http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Collector registration requested");
+        
+        json|error payload = req.getJsonPayload();
+        if (payload is error) {
+            json errorResponse = {
+                "success": false,
+                "message": "Invalid request payload",
+                "timestamp": time:utcToString(time:utcNow())
+            };
+            check caller->respond(errorResponse);
+            return;
+        }
+
+        json collectorData = <json>payload;
+        
+        // Mock registration response
+        json response = {
+            "success": true,
+            "message": "Collector registered successfully",
+            "data": {
+                "collector_id": 789,
+                "email": "collector@example.com",
+                "full_name": "Sample Collector",
+                "vehicle_type": "Three Wheeler",
+                "service_area": "Galle Fort",
+                "registration_date": time:utcToString(time:utcNow())
+            },
+            "timestamp": time:utcToString(time:utcNow())
+        };
+        
+        check caller->respond(response);
+    }
+
+    # Collector login
+    resource function post api/collector/login(http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Collector login requested");
+        
+        json|error payload = req.getJsonPayload();
+        if (payload is error) {
+            json errorResponse = {
+                "success": false,
+                "message": "Invalid login credentials",
+                "timestamp": time:utcToString(time:utcNow())
+            };
+            check caller->respond(errorResponse);
+            return;
+        }
+
+        json loginData = <json>payload;
+        
+        // Mock login response
+        json response = {
+            "success": true,
+            "message": "Login successful",
+            "data": {
+                "collector_id": 13,
+                "email": "collector@example.com",
+                "session_token": "collector_session_" + time:utcNow()[0].toString(),
+                "profile": {
+                    "full_name": "Sunil Amarasinghe",
+                    "vehicle_type": "Three Wheeler",
+                    "vehicle_number": "CAK-1234",
+                    "rating": 4.8,
+                    "is_available": true
+                }
+            },
+            "timestamp": time:utcToString(time:utcNow())
+        };
+        
+        check caller->respond(response);
+    }
+
+    # Get available requests for collector
+    resource function get api/collector/[int collectorId]/requests/available(http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Getting available requests for collector: " + collectorId.toString());
+        
+        // Mock available requests
+        json response = {
+            "success": true,
+            "message": "Available requests retrieved",
+            "data": [
+                {
+                    "request_id": 8,
+                    "customer_name": "Chaminda De Silva",
+                    "request_type": "immediate",
+                    "pickup_address": "No. 89, Baddegama Road, Hikkaduwa",
+                    "pickup_latitude": 6.1395,
+                    "pickup_longitude": 80.1025,
+                    "waste_type": "general",
+                    "estimated_weight": 5.0,
+                    "distance_km": 2.5,
+                    "special_instructions": "Urgent collection needed",
+                    "created_at": "2025-08-31T14:15:00Z"
+                },
+                {
+                    "request_id": 9,
+                    "customer_name": "Priyanka Jayawardana", 
+                    "request_type": "scheduled",
+                    "pickup_address": "No. 234, Colombo Road, Bentota",
+                    "pickup_latitude": 6.4058,
+                    "pickup_longitude": 79.9719,
+                    "waste_type": "general",
+                    "estimated_weight": 7.2,
+                    "distance_km": 15.3,
+                    "scheduled_date": "2025-09-02T08:00:00Z",
+                    "special_instructions": "Large household waste"
+                }
+            ],
+            "timestamp": time:utcToString(time:utcNow())
+        };
+        
+        check caller->respond(response);
+    }
+
+    # Get assigned requests for collector
+    resource function get api/collector/[int collectorId]/requests/assigned(http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Getting assigned requests for collector: " + collectorId.toString());
+        
+        // Mock assigned requests
+        json response = {
+            "success": true,
+            "message": "Assigned requests retrieved",
+            "data": [
+                {
+                    "request_id": 5,
+                    "customer_name": "Asanka Rajapaksha",
+                    "status": "accepted",
+                    "pickup_address": "No. 78, Lighthouse Street, Galle Fort",
+                    "scheduled_date": "2025-08-31T16:00:00Z",
+                    "waste_type": "general",
+                    "estimated_weight": 4.2,
+                    "price": 600.00,
+                    "special_instructions": "Ring the bell"
+                }
+            ],
+            "timestamp": time:utcToString(time:utcNow())
+        };
+        
+        check caller->respond(response);
+    }
+
+    # Collector dashboard
+    resource function get api/collector/[int collectorId]/dashboard(http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Dashboard requested for collector: " + collectorId.toString());
+        
+        // Mock collector dashboard
+        json response = {
+            "success": true,
+            "message": "Collector dashboard data retrieved",
+            "data": {
+                "collector_id": collectorId,
+                "profile": {
+                    "full_name": "Sunil Amarasinghe",
+                    "vehicle_type": "Three Wheeler",
+                    "vehicle_number": "CAK-1234",
+                    "license_number": "DL001234567",
+                    "rating": 4.8,
+                    "total_collections": 156,
+                    "is_available": true
+                },
+                "today_stats": {
+                    "collections_completed": 3,
+                    "earnings": 2250.00,
+                    "distance_traveled": 45.2,
+                    "hours_worked": 6.5
+                },
+                "pending_requests": 1,
+                "available_requests": 2,
+                "current_location": {
+                    "latitude": 6.0329,
+                    "longitude": 80.2168,
+                    "last_updated": time:utcToString(time:utcNow())
+                }
+            },
+            "timestamp": time:utcToString(time:utcNow())
+        };
+        
+        check caller->respond(response);
+    }
+
+    # ==============================================
+    # ADMIN SERVICE ENDPOINTS - /api/admin
+    # ==============================================
+
+    # Admin login
+    resource function post api/admin/login(http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Admin login requested");
+        
+        json|error payload = req.getJsonPayload();
+        if (payload is error) {
+            json errorResponse = {
+                "success": false,
+                "message": "Invalid login credentials",
+                "timestamp": time:utcToString(time:utcNow())
+            };
+            check caller->respond(errorResponse);
+            return;
+        }
+
+        json loginData = <json>payload;
+        
+        // Mock admin login
+        json response = {
+            "success": true,
+            "message": "Admin login successful",
+            "data": {
+                "admin_id": 1,
+                "email": "admin@example.com",
+                "session_token": "admin_session_" + time:utcNow()[0].toString(),
+                "profile": {
+                    "full_name": "Galle Regional Manager",
+                    "role": "admin",
+                    "permissions": ["user_management", "system_monitoring", "analytics", "reports"]
+                }
+            },
+            "timestamp": time:utcToString(time:utcNow())
+        };
+        
+        check caller->respond(response);
+    }
+
+    # Admin dashboard
+    resource function get api/admin/dashboard(http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Admin dashboard requested");
+        
+        // Mock admin dashboard with real data from your database
+        json response = {
+            "success": true,
+            "message": "Admin dashboard data retrieved",
+            "data": {
+                "system_overview": {
+                    "total_users": 18,
+                    "total_customers": 10,
+                    "total_collectors": 5,
+                    "active_requests": 3,
+                    "completed_today": 4,
+                    "revenue_today": 2670.00
+                },
+                "geographic_coverage": [
+                    "Galle Fort", "Unawatuna", "Hikkaduwa", 
+                    "Bentota", "Koggala", "Ahangama"
+                ],
+                "recent_activity": [
+                    {
+                        "type": "request_completed",
+                        "message": "Collection completed in Galle Fort",
+                        "timestamp": "2025-08-31T08:25:00Z"
+                    },
+                    {
+                        "type": "new_registration",
+                        "message": "New customer registered in Unawatuna",
+                        "timestamp": "2025-08-31T10:15:00Z"
+                    }
+                ],
+                "performance_metrics": {
+                    "average_completion_time": "25 minutes",
+                    "customer_satisfaction": 4.6,
+                    "collector_efficiency": 89.5
+                }
+            },
+            "timestamp": time:utcToString(time:utcNow())
+        };
+        
+        check caller->respond(response);
+    }
+
+    # Get all users (admin)
+    resource function get api/admin/users(http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Admin users list requested");
+        
+        // Mock users data based on your real database structure
+        json response = {
+            "success": true,
+            "message": "Users data retrieved",
+            "data": {
+                "customers": [
+                    {
+                        "id": 3,
+                        "full_name": "Nimal Silva",
+                        "email": "nimal.silva@gmail.com",
+                        "phone": "+94701234567",
+                        "location": "Galle Fort",
+                        "subscription": "premium",
+                        "status": "active"
+                    },
+                    {
+                        "id": 4,
+                        "full_name": "Kumari Fernando", 
+                        "email": "kumari.fernando@gmail.com",
+                        "phone": "+94701234568",
+                        "location": "Unawatuna",
+                        "subscription": "basic",
+                        "status": "active"
+                    }
+                ],
+                "collectors": [
+                    {
+                        "id": 13,
+                        "full_name": "Sunil Amarasinghe",
+                        "email": "sunil.collector@binbuddy.lk",
+                        "vehicle": "Three Wheeler - CAK-1234",
+                        "service_area": "Galle Fort, Kaluwella",
+                        "rating": 4.8,
+                        "status": "active"
+                    },
+                    {
+                        "id": 14,
+                        "full_name": "Lasith Kumara",
+                        "email": "lasith.collector@binbuddy.lk", 
+                        "vehicle": "Small Truck - CAL-5678",
+                        "service_area": "Unawatuna, Thalpe",
+                        "rating": 4.6,
+                        "status": "active"
+                    }
+                ]
+            },
+            "timestamp": time:utcToString(time:utcNow())
+        };
+        
+        check caller->respond(response);
+    }
+
+    # Get all requests (admin monitoring)
+    resource function get api/admin/requests(http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Admin requests monitoring requested");
+        
+        // Mock requests data based on your real database
+        json response = {
+            "success": true,
+            "message": "All requests data retrieved",
+            "data": [
+                {
+                    "request_id": 1,
+                    "customer_name": "Nimal Silva",
+                    "collector_name": "Sunil Amarasinghe",
+                    "status": "completed",
+                    "pickup_address": "No. 15, Church Street, Galle Fort",
+                    "waste_type": "general",
+                    "price": 750.00,
+                    "created_at": "2025-08-30T08:00:00Z",
+                    "completed_at": "2025-08-30T08:25:00Z"
+                },
+                {
+                    "request_id": 6,
+                    "customer_name": "Rohan Wickramasinghe",
+                    "collector_name": "Lasith Kumara",
+                    "status": "in_progress",
+                    "pickup_address": "No. 67, Matara Road, Unawatuna",
+                    "waste_type": "recyclable",
+                    "price": 350.00,
+                    "created_at": "2025-08-31T12:20:00Z",
+                    "started_at": "2025-08-31T13:00:00Z"
+                },
+                {
+                    "request_id": 8,
+                    "customer_name": "Chaminda De Silva",
+                    "collector_name": null,
+                    "status": "pending",
+                    "pickup_address": "No. 89, Baddegama Road, Hikkaduwa",
+                    "waste_type": "general",
+                    "price": null,
+                    "created_at": "2025-08-31T14:15:00Z"
+                }
+            ],
+            "timestamp": time:utcToString(time:utcNow())
+        };
+        
+        check caller->respond(response);
+    }
+
+    # Analytics endpoint for admins
+    resource function get api/admin/analytics/[string reportType](http:Caller caller, http:Request req) returns error? {
+        log:printInfo("Analytics report requested: " + reportType);
+        
+        json response = {};
+        
+        if (reportType == "daily") {
+            response = {
+                "success": true,
+                "message": "Daily analytics retrieved",
+                "data": {
+                    "date": "2025-08-31",
+                    "total_collections": 4,
+                    "total_revenue": 2670.00,
+                    "average_rating": 4.5,
+                    "top_areas": ["Galle Fort", "Unawatuna", "Hikkaduwa"],
+                    "active_collectors": 3,
+                    "customer_satisfaction": 4.6
+                },
+                "timestamp": time:utcToString(time:utcNow())
+            };
+        } else if (reportType == "weekly") {
+            response = {
+                "success": true,
+                "message": "Weekly analytics retrieved", 
+                "data": {
+                    "week_ending": "2025-08-31",
+                    "total_requests": 18,
+                    "completed_requests": 14,
+                    "total_revenue": 11250.00,
+                    "customer_satisfaction": 4.6,
+                    "top_collector": "Dinesh Madusanka",
+                    "busiest_area": "Galle Fort"
+                },
+                "timestamp": time:utcToString(time:utcNow())
+            };
+        } else if (reportType == "monthly") {
+            response = {
+                "success": true,
+                "message": "Monthly analytics retrieved",
+                "data": {
+                    "month": "2025-08",
+                    "total_requests": 85,
+                    "completed_requests": 78,
+                    "total_revenue": 52750.00,
+                    "new_customers": 12,
+                    "top_performing_collectors": [
+                        {"name": "Dinesh Madusanka", "collections": 78, "rating": 4.9},
+                        {"name": "Lasith Kumara", "collections": 62, "rating": 4.6}
+                    ]
+                },
+                "timestamp": time:utcToString(time:utcNow())
+            };
+        } else {
+            response = {
+                "success": false,
+                "message": "Invalid report type. Use 'daily', 'weekly', or 'monthly'",
+                "timestamp": time:utcToString(time:utcNow())
+            };
+        }
+        
+        check caller->respond(response);
+    }
 }
