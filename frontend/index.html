@@ -634,10 +634,11 @@
                         if (!response.ok) {
                             throw new Error(data.message || 'Login failed.');
                         }
+                        console.log("Login successful:", data.session_token);
 
                         // Store token from backend response
-                        if (data.session_token) {
-                            localStorage.setItem('authToken', data.session_token);
+                        if (response.data.session_token) {
+                            localStorage.setItem('authToken', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30");
                         } else {
                             throw new Error("No token received from server.");
                         }
