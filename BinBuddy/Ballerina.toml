@@ -2,19 +2,17 @@
 org = "user"
 name = "BinBuddy"
 version = "0.1.0"
-distribution = "2201.10.0"
+distribution = "2201.12.9"
 
 [build-options]
 observabilityIncluded = true
 
-# MySQL dependencies (commented out for initial setup)
-# Uncomment when ready to connect to actual database
-# [[dependency]]
-# org = "ballerinax"
-# name = "mysql"
-# version = "1.11.0"
+[[dependency]]
+org = "ballerinax"
+name = "mysql"
+version = "1.11.0"
 
-# [[dependency]]
-# org = "ballerinax"
-# name = "mysql.driver"
-# version = "1.6.0"
+[[dependency]]
+org = "ballerinax"
+name = "mysql.driver"
+version = "1.6.0"

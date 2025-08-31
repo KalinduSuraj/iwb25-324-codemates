@@ -1,9 +1,10 @@
 import ballerina/sql;
 import ballerina/log;
+import ballerinax/mysql;
+import ballerinax/mysql.driver as _;
 
 # Database connection utility for BinBuddy
 # Provides database connection abstraction and common operations
-# Note: MySQL dependencies removed for initial setup - add back when database is configured
 
 # Database configuration
 configurable string DB_HOST = "localhost";
@@ -12,51 +13,41 @@ configurable string DB_NAME = "binbuddy_db";
 configurable string DB_USERNAME = "root";
 configurable string DB_PASSWORD = "";
 
-# Database client placeholder
-any dbClient = ();
-
-# Initialize database connection
-public function initDatabase() returns error? {
-    log:printInfo("Database initialization skipped - MySQL module not configured");
-    log:printInfo("To enable database functionality:");
-    log:printInfo("1. Install MySQL connector: bal pull ballerinax/mysql");
-    log:printInfo("2. Uncomment MySQL imports and client initialization");
-    log:printInfo("3. Configure database credentials");
-    
-    return;
+# Create a new database client
+public function createDbClient() returns mysql:Client|error {
+    mysql:Client mysqlClient = check new (
+        host = DB_HOST,
+        port = DB_PORT,
+        database = DB_NAME,
+        user = DB_USERNAME,
+        password = DB_PASSWORD
+    );
+    return mysqlClient;
 }
 
-# Close database connection
-public function closeDatabase() returns error? {
-    log:printInfo("Database connection closed (placeholder)");
-    return;
+# Execute parameterized query
+public function executeQuery(mysql:Client dbClient, sql:ParameterizedQuery query) returns sql:ExecutionResult|error {
+    sql:ExecutionResult result = check dbClient->execute(query);
+    return result;
 }
 
-# Get database client (placeholder)
-public function getDbClient() returns any {
-    return dbClient;
+# Execute SELECT query and return stream
+public function queryDatabase(mysql:Client dbClient, sql:ParameterizedQuery query) returns stream<record {}, error?>|error {
+    stream<record {}, error?> resultStream = dbClient->query(query);
+    return resultStream;
 }
 
-# Execute parameterized query (placeholder)
-public function executeQuery(sql:ParameterizedQuery query) returns sql:ExecutionResult|error {
-    log:printWarn("Database query execution skipped - connect to MySQL database first");
-    return error("Database not connected - MySQL module required");
-}
-
-# Execute batch queries (placeholder)
-public function executeBatchQuery(sql:ParameterizedQuery[] queries) returns sql:ExecutionResult[]|error {
-    log:printWarn("Batch query execution skipped - connect to MySQL database first");
-    return error("Database not connected - MySQL module required");
-}
-
-# Execute SELECT query and return stream (placeholder)
-public function queryDatabase(sql:ParameterizedQuery query) returns stream<record {}, error?>|error {
-    log:printWarn("Database query skipped - connect to MySQL database first");
-    return error("Database not connected - MySQL module required");
-}
-
-# Health check for database (placeholder)
+# Health check for database - simplified version
 public function isDatabaseHealthy() returns boolean {
-    log:printInfo("Database health check: Not connected (using placeholder implementation)");
-    return false; // Return false since no actual database is connected
+    do {
+        mysql:Client dbClient = check createDbClient();
+        sql:ParameterizedQuery healthQuery = `SELECT 1 as health_check`;
+        sql:ExecutionResult result = check dbClient->execute(healthQuery);
+        error? closeResult = dbClient.close();
+        log:printInfo("Database health check passed");
+        return true;
+    } on fail error e {
+        log:printWarn("Database health check failed", e);
+        return false;
+    }
 }
